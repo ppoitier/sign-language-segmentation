@@ -8,17 +8,30 @@ class RNNBackbone(nn.Module):
         in_channels: int,
         hidden_channels: int,
         out_channels: int,
+        n_layers: int = 1,
         bidirectional: bool = False,
-        rnn: str = 'lstm',
+        rnn: str = "lstm",
     ):
         super().__init__()
 
-        if rnn == 'lstm':
-            self.rnn = nn.LSTM(in_channels, hidden_channels, bidirectional=bidirectional, batch_first=True)
-        elif rnn == 'gru':
-            self.rnn = nn.GRU(in_channels, hidden_channels, bidirectional=bidirectional, batch_first=True)
+        if rnn == "lstm":
+            self.rnn = nn.LSTM(
+                in_channels,
+                hidden_channels,
+                bidirectional=bidirectional,
+                num_layers=n_layers,
+                batch_first=True,
+            )
+        elif rnn == "gru":
+            self.rnn = nn.GRU(
+                in_channels,
+                hidden_channels,
+                bidirectional=bidirectional,
+                num_layers=n_layers,
+                batch_first=True,
+            )
         else:
-            raise ValueError(f'Unknown RNN type: {rnn}')
+            raise ValueError(f"Unknown RNN type: {rnn}")
 
         self.proj_out = nn.Linear(
             2 * hidden_channels if bidirectional else hidden_channels, out_channels

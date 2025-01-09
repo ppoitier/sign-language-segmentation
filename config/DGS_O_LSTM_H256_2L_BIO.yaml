@@ -1,0 +1,8 @@
+from: "DGS_O_LSTM_H256_2L_BIO.yaml"
+
+target:
+  type: "bio_tags"
+
+backbone:
+  args:
+    out_channels: 3
