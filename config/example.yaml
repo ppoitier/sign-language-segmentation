@@ -16,12 +16,12 @@ backbone:
   args:
     in_channels: 65
     hidden_channels: 64
-    out_channels: 2
+    out_channels: 3
     bidirectional: true
     rnn: 'lstm'
 
 target:
-  type: "actionness"
+  type: "bio_tags"
   boundary_noise: 0
 
 training:

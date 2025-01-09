@@ -20,6 +20,13 @@ class SegmentationTrainer(TrainerBase):
         self.target = target
         self.lr = lr
 
+        if target == 'actionness':
+            n_classes = 2
+        elif target == 'bio_tags':
+            n_classes = 3
+        else:
+            raise ValueError(f"Unknown target: {target}")
+
         if backbone == 'mstcn':
             self.backbone = MSTCNBackbone(**backbone_kwargs)
         if backbone == 'rnn':
@@ -32,9 +39,9 @@ class SegmentationTrainer(TrainerBase):
         self.decoder = get_target_decoder(target)
         self.save_hyperparameters()
 
-        self.train_metrics = PerFrameMetrics(prefix='train/', n_classes=2)
-        self.val_metrics = PerFrameMetrics(prefix='val/', n_classes=2)
-        self.test_metrics = PerFrameMetrics(prefix='test/', n_classes=2)
+        self.train_metrics = PerFrameMetrics(prefix='train/', n_classes=n_classes)
+        self.val_metrics = PerFrameMetrics(prefix='val/', n_classes=n_classes)
+        self.test_metrics = PerFrameMetrics(prefix='test/', n_classes=n_classes)
 
     def prediction_step(self, batch, mode: str):
         _, features, masks, targets = batch

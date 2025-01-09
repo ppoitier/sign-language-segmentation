@@ -1,5 +1,5 @@
 from .encoders import ActionnessEncoder, BIOTagEncoder, BoundariesEncoder
-from .decoders import ActionnessDecoder
+from .decoders import ActionnessDecoder, BIOTagDecoder
 
 
 def get_target_encoder(target: str, length: int, **kwargs):
@@ -16,5 +16,7 @@ def get_target_encoder(target: str, length: int, **kwargs):
 def get_target_decoder(target: str):
     if target == 'actionness':
         return ActionnessDecoder()
+    elif target == 'bio_tags':
+        return BIOTagDecoder()
     else:
         raise ValueError(f"No decoder found for target: {target}")

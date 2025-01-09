@@ -53,8 +53,8 @@ def _map_fn(
                     "segments": segments,
                 },
                 target: {
-                    "train_segmentation": train_encoder(segments),
-                    "val_segmentation": val_encoder(segments),
+                    "train_segmentation": train_encoder(segments[:, :2]),
+                    "val_segmentation": val_encoder(segments[:, :2]),
                 },
             },
         }
