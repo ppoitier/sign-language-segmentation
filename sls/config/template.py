@@ -31,6 +31,7 @@ class TrainingConfig(BaseModel):
     criterion: str
     learning_rate: float
     n_epochs: int
+    gradient_clipping: float = 0.0
 
 
 class ExperimentConfig(BaseModel):
