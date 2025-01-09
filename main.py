@@ -2,6 +2,9 @@ import click
 from pprint import pprint
 from time import time
 
+import torch
+torch.set_float32_matmul_precision('medium')
+
 from sls.backbones import load_module
 from sls.config.utils import load_config
 from sls.datasets.densely_annotated import load_datasets, load_dataloaders
@@ -62,8 +65,8 @@ def launch_experiment(config_path: str):
         log_dir=log_dir,
         checkpoints_dir=checkpoint_dir,
         n_epochs=config.training.n_epochs,
-        gradient_clipping=0,
-        debug=True,
+        gradient_clipping=config.training.gradient_clipping,
+        debug=config.experiment.debug,
     )
     print("Done.")
 
