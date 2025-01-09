@@ -1,0 +1,17 @@
+from: 'example.yaml'
+
+dataset:
+  root: "/gpfs/scratch/acad/lsfb/datasets/dgs"
+  train_shards_url: "shards/shard_{000000..000002}.tar"
+  val_shards_url: "shards/shard_000003.tar"
+  test_shards_url: "shards/shard_000004.tar"
+
+training:
+  batch_size: 8
+  n_workers: 1
+  criterion: 'ce'
+
+experiment:
+  name: "dgs_rep"
+  debug: false
+  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs"

@@ -1,0 +1,37 @@
+
+dataset:
+  root: "/run/media/ppoitier/ppoitier/datasets/sign-languages/dgs_corpus"
+  train_shards_url: "shards/shard_{000000..000002}.tar"
+  val_shards_url: "shards/shard_000003.tar"
+  test_shards_url: "shards/shard_000004.tar"
+
+preprocessing:
+  use_windows: true
+  window_size: 1500
+  window_stride: 1200
+  transforms_pipeline: 'optical-flow'
+
+backbone:
+  name: 'rnn'
+  args:
+    in_channels: 65
+    hidden_channels: 64
+    out_channels: 2
+    bidirectional: true
+    rnn: 'lstm'
+
+target:
+  type: "actionness"
+  boundary_noise: 0
+
+training:
+  batch_size: 2
+  n_workers: 7
+  criterion: 'ce'
+  learning_rate: 1e-3
+  n_epochs: 100
+
+experiment:
+  name: "segmentation"
+  debug: true
+  out_dir: "./out"
