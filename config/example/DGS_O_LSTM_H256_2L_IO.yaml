@@ -40,9 +40,9 @@ training:
   early_stopping_patience: 10
   criterion_use_weights: false
   skip_training: false
-  skip_testing: true
+  skip_testing: false
 
 experiment:
   name: "dgs_o_lstm_h256_2l_io"
-  debug: true
+  debug: false
   out_dir: "/gpfs/scratch/acad/lsfb/out/dgs"
