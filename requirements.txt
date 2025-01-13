@@ -1,0 +1,9 @@
+click
+lightning
+numpy
+pandas
+pydantic
+tensorboard
+torch
+torchmetrics
+webdataset
