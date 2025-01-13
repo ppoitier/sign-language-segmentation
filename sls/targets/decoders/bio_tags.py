@@ -14,5 +14,5 @@ class BIOTagDecoder(TargetDecoder):
 
     def decode(self, encoded: np.ndarray) -> np.ndarray:
         # noinspection PyTypeChecker
-        binary_segmentation: np.ndarray = (encoded == 2) | (encoded == 1)
+        binary_segmentation: np.ndarray = ((encoded == 2) | (encoded == 1)).astype('uint8')
         return self.transform(binary_segmentation)

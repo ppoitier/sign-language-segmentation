@@ -20,12 +20,16 @@ def compute_window_indices(sequence_length: int, window_size: int, stride: int) 
 
 
 def get_segments_in_range(segments, start, end):
-    return segments[(segments[:, 0] < end) & (segments[:, 1] >= start)]
+    return np.clip(segments[(segments[:, 0] < end) & (segments[:, 1] >= start)], a_min=start, a_max=end) - start
 
 
 def get_window_from_instance(instance: dict, start: int, end: int):
     if isinstance(instance, np.ndarray) or isinstance(instance, list):
-        return instance[start:end]
+        instance: np.ndarray
+        if len(instance.shape) == 2:
+            return instance[:, start:end]
+        else:
+            return instance[start:end]
     elif isinstance(instance, dict):
         new_instance = dict()
         for k, v in instance.items():

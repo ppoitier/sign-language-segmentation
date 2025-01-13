@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 
 import lightning as pl
 from lightning.pytorch.loggers import TensorBoardLogger
-from lightning.pytorch.callbacks import ModelCheckpoint, LearningRateMonitor
+from lightning.pytorch.callbacks import ModelCheckpoint, LearningRateMonitor, EarlyStopping
 
 from sls.trainers.base import TrainerBase
 
@@ -16,12 +16,12 @@ def run_training(
     checkpoints_dir: str,
     n_epochs: int = 100,
     gradient_clipping: float = 0.0,
+    early_stopping_patience: int = 10,
     debug: bool = False,
 ):
     checkpoint_callback = ModelCheckpoint(
             dirpath=checkpoints_dir,
             save_top_k=1,
-            every_n_epochs=10,
             save_last=True,
             monitor="val_loss",
         )
@@ -32,6 +32,10 @@ def run_training(
             log_momentum=True,
             log_weight_decay=True,
         ),
+        EarlyStopping(
+            monitor="val_loss",
+            patience=early_stopping_patience,
+        )
     ]
     logger = TensorBoardLogger(save_dir=log_dir)
     trainer = pl.Trainer(

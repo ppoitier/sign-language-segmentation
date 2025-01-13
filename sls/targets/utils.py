@@ -1,22 +1,30 @@
-from .encoders import ActionnessEncoder, BIOTagEncoder, BoundariesEncoder
+from .encoders import (ActionnessEncoder, BIOTagEncoder, BoundariesEncoder, OffsetsEncoder,
+                       OffsetsWithSegmentationEncoder)
 from .decoders import ActionnessDecoder, BIOTagDecoder
 
 
-def get_target_encoder(target: str, length: int, **kwargs):
-    if target == 'actionness':
-        return ActionnessEncoder(length)
-    elif target == 'bio_tags':
-        return BIOTagEncoder(length, **kwargs)
-    elif target == 'thin_boundaries':
-        return BoundariesEncoder(length, **kwargs)
+def get_target_encoder(encoder_name: str, encoder_args: dict, length: int):
+    encoder_args['length'] = length
+    if encoder_name == 'actionness':
+        return ActionnessEncoder(**encoder_args)
+    elif encoder_name == 'bio_tags':
+        return BIOTagEncoder(**encoder_args)
+    elif encoder_name == 'thin_boundaries':
+        return BoundariesEncoder(**encoder_args)
+    elif encoder_name == 'offsets':
+        return OffsetsEncoder(**encoder_args)
+    elif encoder_name == 'offsets+bio_tags':
+        return OffsetsWithSegmentationEncoder(length=encoder_args['length'], segmentation_encoder=BIOTagEncoder(**encoder_args))
+    elif encoder_name == 'offsets+actionness':
+        return OffsetsWithSegmentationEncoder(length=encoder_args['length'], segmentation_encoder=ActionnessEncoder(**encoder_args))
     else:
-        raise ValueError(f"No encoder found for target: {target}")
+        raise ValueError(f"Unknown target encoder: {encoder_name}")
 
 
-def get_target_decoder(target: str):
-    if target == 'actionness':
+def get_target_decoder(decoder_name: str, decoder_args: dict):
+    if decoder_name == 'actionness':
         return ActionnessDecoder()
-    elif target == 'bio_tags':
+    elif decoder_name == 'bio_tags':
         return BIOTagDecoder()
     else:
-        raise ValueError(f"No decoder found for target: {target}")
+        raise ValueError(f"Unknown target decoder: {decoder_name}")

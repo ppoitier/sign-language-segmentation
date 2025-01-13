@@ -18,11 +18,23 @@ class Preprocessing(BaseModel):
 class BackboneConfig(BaseModel):
     name: str
     args: dict[str, str | int | float | bool]
+    checkpoint_path: str | None = None
+
+
+class EncoderConfig(BaseModel):
+    name: str
+    args: dict[str, str | int | float | bool]
+
+
+class DecoderConfig(BaseModel):
+    name: str
+    args: dict[str, str | int | float | bool]
 
 
 class TargetConfig(BaseModel):
-    type: str = 'actionness'
-    boundary_noise: float = 0.0
+    offsets: bool
+    encoder: EncoderConfig
+    decoder: DecoderConfig
 
 
 class TrainingConfig(BaseModel):
@@ -31,7 +43,11 @@ class TrainingConfig(BaseModel):
     criterion: str
     learning_rate: float
     n_epochs: int
+    criterion_use_weights: bool = False
     gradient_clipping: float = 0.0
+    early_stopping_patience: int = 10
+    skip_training: bool = False
+    skip_testing: bool = False
 
 
 class ExperimentConfig(BaseModel):

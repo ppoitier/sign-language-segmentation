@@ -1,6 +1,6 @@
 
 dataset:
-  root: "/run/media/ppoitier/ppoitier/datasets/sign-languages/dgs_corpus"
+  root: "file:D:/data/sign-languages/dgs-corpus"
   train_shards_url: "shards/shard_{000000..000002}.tar"
   val_shards_url: "shards/shard_000003.tar"
   test_shards_url: "shards/shard_000004.tar"
@@ -21,16 +21,25 @@ backbone:
     rnn: 'lstm'
 
 target:
-  type: "bio_tags"
-  boundary_noise: 0
+  offsets: false
+  encoder:
+    name: 'bio_tags'
+    args: {}
+  decoder:
+    name: 'bio_tags'
+    args: {}
 
 training:
   batch_size: 2
-  n_workers: 7
+  n_workers: 0
   criterion: 'ce'
+  criterion_use_weights: false
   learning_rate: 1e-3
   n_epochs: 100
   gradient_clipping: 0.5
+  early_stopping_patience: 10
+  skip_training: false
+  skip_testing: true
 
 experiment:
   name: "segmentation"

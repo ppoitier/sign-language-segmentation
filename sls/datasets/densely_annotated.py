@@ -12,7 +12,8 @@ from sls.datasets.utils.collate import collate_fixed_size, collate_varying_size
 
 
 def _map_fn(
-    target: str,
+    encoder_name: str,
+    encoder_args: dict,
     include_i3d_features: bool,
 ):
     segmentation_to_segments = SegmentationVectorToSegments(
@@ -27,18 +28,11 @@ def _map_fn(
         segments = segmentation_to_segments(class_segmentation)
         segments = segments[:, :]
 
-        mask = sample.get("mask.npy")
-        if mask is not None:
-            length = mask.sum()
-            binary_segmentation[length:] = -1
-            class_segmentation[length:] = -1
-
-        encoder = get_target_encoder(target=target, length=binary_segmentation.shape[0])
-        if isinstance(encoder, tuple):
-            train_encoder, val_encoder = encoder
-        else:
-            train_encoder, val_encoder = encoder, encoder
-
+        encoder = get_target_encoder(
+            encoder_name=encoder_name,
+            encoder_args=encoder_args,
+            length=binary_segmentation.shape[0],
+        )
         processed_sample = {
             "features": {
                 "upper_pose": sample["pose.upper_pose.npy"],
@@ -46,16 +40,12 @@ def _map_fn(
                 "right_hand": sample["pose.right_hand.npy"],
                 "lips": sample["pose.lips.npy"],
             },
-            "mask": mask,
             "targets": {
                 "ground_truth": {
                     "segmentation": binary_segmentation,
                     "segments": segments,
                 },
-                target: {
-                    "train_segmentation": train_encoder(segments[:, :2]),
-                    "val_segmentation": val_encoder(segments[:, :2]),
-                },
+                encoder_name: encoder(segments[:, :2]),
             },
         }
         if include_i3d_features:
@@ -69,16 +59,18 @@ class DenselyAnnotatedSLDataset(Dataset):
     def __init__(
         self,
         url: str,
+        encoder: str,
+        encoder_args: dict,
         transform=None,
         show_progress: bool = False,
-        target: str = "actionness",
         include_i3d_features: bool = False,
         use_windows: bool = False,
         window_size: int = 1500,
         window_stride: int = 1200,
     ):
         super().__init__()
-        self.target = target
+        self.encoder = encoder
+        self.encoder_args = encoder_args
         self.transform = transform
         self.samples: list[dict] = []
         web_dataset = wds.DataPipeline(
@@ -86,7 +78,7 @@ class DenselyAnnotatedSLDataset(Dataset):
             wds.split_by_worker,
             wds.tarfile_to_samples(),
             wds.decode(),
-            wds.map(_map_fn(target, include_i3d_features)),
+            wds.map(_map_fn(encoder, encoder_args, include_i3d_features)),
         )
         if show_progress:
             print(f"Loading dataset [{url}].", flush=True)
@@ -96,7 +88,9 @@ class DenselyAnnotatedSLDataset(Dataset):
         if use_windows:
             print("Building windows...")
             n_instances = len(self.samples)
-            self.samples = convert_instances_to_windows(self.samples, window_size, window_stride)
+            self.samples = convert_instances_to_windows(
+                self.samples, window_size, window_stride
+            )
             print(f"From {n_instances} instances to {len(self.samples)} windows.")
 
     def __len__(self):
@@ -104,15 +98,14 @@ class DenselyAnnotatedSLDataset(Dataset):
 
     def __getitem__(self, index):
         sample = self.samples[index]
-        instance_id, features, mask, targets = (
+        instance_id, features, targets = (
             sample["__key__"],
             sample["features"],
-            sample["mask"],
             sample["targets"],
         )
         if self.transform is not None:
             features = self.transform(features)
-        return instance_id, features, mask, targets
+        return instance_id, features, targets
 
 
 def default_transform():
@@ -128,9 +121,10 @@ def load_datasets(
     root: str,
     training_shards: str,
     validation_shards: str,
+    encoder_name: str,
+    encoder_args: dict,
     show_progress: bool = True,
     transform=None,
-    target: str = "actionness",
     use_windows: bool = False,
     window_size: int = 1500,
     window_stride: int = 1200,
@@ -140,7 +134,8 @@ def load_datasets(
             url=f"{root}/{training_shards}",
             show_progress=show_progress,
             transform=transform,
-            target=target,
+            encoder=encoder_name,
+            encoder_args=encoder_args,
             use_windows=use_windows,
             window_size=window_size,
             window_stride=window_stride,
@@ -149,7 +144,8 @@ def load_datasets(
             url=f"{root}/{validation_shards}",
             show_progress=show_progress,
             transform=transform,
-            target=target,
+            encoder=encoder_name,
+            encoder_args=encoder_args,
             use_windows=use_windows,
             window_size=window_size,
             window_stride=window_stride,
@@ -165,11 +161,11 @@ def load_dataloaders(
 ):
     def _collate_fn(batch):
         instance_ids = [b[0] for b in batch]
-        target = datasets["training"].target
+        encoder_name = datasets["training"].encoder
         if fixed_sequence_length:
-            features, masks, targets = collate_fixed_size(batch, target)
+            features, masks, targets = collate_fixed_size(batch, encoder_name)
         else:
-            features, masks, targets = collate_varying_size(batch, target)
+            features, masks, targets = collate_varying_size(batch, encoder_name)
         return instance_ids, features, masks, targets
 
     dataloaders = {
