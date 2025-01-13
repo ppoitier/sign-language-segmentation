@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-1
+#SBATCH --array=0-5
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -25,8 +25,12 @@ module load Python/3.10.4-GCCcore-11.3.0
 source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 
 config_files=(
-  "../config/DGS_O_LSTM_H256_2L_BIO.yaml"
-  "../config/DGS_O_LSTM_H256_2L_IO.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_IO.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_BIO.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_IO_W.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_BIO_W.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_BIO_f.yaml"
+  "../config/example/DGS_O_LSTM_H256_2L_BIO_Wf.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}
