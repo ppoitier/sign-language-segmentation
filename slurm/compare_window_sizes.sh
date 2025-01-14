@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-15
+#SBATCH --array=0-0
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -25,22 +25,23 @@ module load Python/3.10.4-GCCcore-11.3.0
 source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 
 config_files=(
-  "../config/windows/DGS_O_MSTCN_H64_IO_W250.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W1000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W1500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W2000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W2500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W3000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W3500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W4000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W4500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W5000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W5500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W6000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W6500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W7000.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_W7500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W250.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W1000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W1500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W2000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W2500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W3000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W3500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W4000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W4500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W5000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W5500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W6000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W6500.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W7000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_W7500.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_NOWINDOW.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}
