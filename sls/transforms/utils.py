@@ -7,6 +7,18 @@ def get_transform_pipeline(pipeline_name: str):
         return Compose([
             Concatenate(["upper_pose", "left_hand", "right_hand"]),
             ToOpticalFlow(fps=50),
-            # Padding(min_length=1500, mode='edge'),
         ])
+    elif pipeline_name == 'norm+optical-flow':
+        return Compose([
+            Concatenate(["upper_pose", "left_hand", "right_hand"]),
+            NormalizeEdgeLengths(unitary_edge=(11, 12)),
+            CenterOnLandmarks((11, 12)),
+            ToOpticalFlow(fps=50),
+        ])
+    elif pipeline_name == 'flatten-pose':
+        return Compose([
+            Concatenate(["upper_pose", "left_hand", "right_hand"]),
+            ToOpticalFlow(fps=50),
+        ])
+
     raise ValueError(f"Unknown transform pipeline: {pipeline_name}")

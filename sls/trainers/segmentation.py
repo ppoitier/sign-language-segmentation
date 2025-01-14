@@ -54,24 +54,24 @@ class SegmentationTrainer(TrainerBase):
 
     def prediction_step(self, batch, mode: str):
         _, features, masks, targets = batch
-        target_segmentation = targets[self.encoder_name].long()
-        batch_size = target_segmentation.size(0)
+        encoded_targets = targets[self.encoder_name].long()
+        batch_size = encoded_targets.size(0)
 
         logits = self.backbone(features.float(), masks)
-        loss = self.criterion(logits, target_segmentation)
+        loss = self.criterion(logits, encoded_targets)
         if self.backbone_name == 'mstcn':
             logits = logits[-1].permute(0, 2, 1).contiguous()
 
         per_frame_probs = logits.softmax(dim=-1).permute(0, 2, 1).contiguous()
 
         if mode == 'training':
-            metrics = self.train_metrics(per_frame_probs, target_segmentation)
+            metrics = self.train_metrics(per_frame_probs, encoded_targets)
             self.log('train_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
         elif mode == 'validation':
-            metrics = self.val_metrics(per_frame_probs, target_segmentation)
+            metrics = self.val_metrics(per_frame_probs, encoded_targets)
             self.log('val_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
         else:
-            metrics = self.test_metrics(per_frame_probs, target_segmentation)
+            metrics = self.test_metrics(per_frame_probs, encoded_targets)
             self.log('test_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
         self.log_metrics(metrics, batch_size=batch_size)
 
