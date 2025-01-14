@@ -41,7 +41,9 @@ config_files=(
 #  "../config/windows/DGS_O_MSTCN_H64_IO_W6500.yaml"
 #  "../config/windows/DGS_O_MSTCN_H64_IO_W7000.yaml"
 #  "../config/windows/DGS_O_MSTCN_H64_IO_W7500.yaml"
-  "../config/windows/DGS_O_MSTCN_H64_IO_NOWINDOW.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W10000.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W15000.yaml"
+#  "../config/windows/DGS_O_MSTCN_H64_IO_NOWINDOW.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}
