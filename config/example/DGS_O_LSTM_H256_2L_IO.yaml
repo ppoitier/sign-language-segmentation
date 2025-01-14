@@ -44,5 +44,6 @@ training:
 
 experiment:
   name: "dgs_o_lstm_h256_2l_io"
+  seed: 42
   debug: false
   out_dir: "/gpfs/scratch/acad/lsfb/out/dgs"

@@ -53,6 +53,7 @@ class TrainingConfig(BaseModel):
 class ExperimentConfig(BaseModel):
     name: str
     out_dir: str
+    seed: int = 42
     debug: bool = False
 
 

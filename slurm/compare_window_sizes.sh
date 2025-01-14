@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-10
+#SBATCH --array=0-15
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -36,6 +36,11 @@ config_files=(
   "../config/windows/DGS_O_MSTCN_H64_IO_W4000.yaml"
   "../config/windows/DGS_O_MSTCN_H64_IO_W4500.yaml"
   "../config/windows/DGS_O_MSTCN_H64_IO_W5000.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W5500.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W6000.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W6500.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W7000.yaml"
+  "../config/windows/DGS_O_MSTCN_H64_IO_W7500.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}

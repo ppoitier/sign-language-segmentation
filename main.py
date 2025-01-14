@@ -1,7 +1,9 @@
 import click
 from pprint import pprint
 from time import time
+import random
 
+import numpy as np
 import torch
 
 torch.set_float32_matmul_precision("medium")
@@ -23,6 +25,12 @@ def launch_experiment(config_path: str):
     config = load_config(config_path)
     print("Configuration loaded.")
     pprint(config.model_dump(mode="json"), indent=2)
+
+    seed = config.experiment.seed
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    print(f"-- Seed: {seed}")
 
     print("Loading datasets...")
     datasets = load_datasets(

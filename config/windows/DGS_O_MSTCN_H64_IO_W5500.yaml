@@ -1,0 +1,8 @@
+from: "DGS_O_MSTCN_H64_IO_W1500.yaml"
+
+preprocessing:
+  window_size: 5500
+  window_stride: 4400
+
+experiment:
+  name: "w5500_dgs_o_mstcn_h64_io"
