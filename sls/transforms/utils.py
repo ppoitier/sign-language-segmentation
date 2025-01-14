@@ -7,6 +7,6 @@ def get_transform_pipeline(pipeline_name: str):
         return Compose([
             Concatenate(["upper_pose", "left_hand", "right_hand"]),
             ToOpticalFlow(fps=50),
-            Padding(min_length=1500, mode='edge'), # TODO: move this. Maybe a transform builder ?
+            # Padding(min_length=1500, mode='edge'),
         ])
     raise ValueError(f"Unknown transform pipeline: {pipeline_name}")
