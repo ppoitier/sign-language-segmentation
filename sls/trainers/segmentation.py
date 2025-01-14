@@ -26,9 +26,9 @@ class SegmentationTrainer(TrainerBase):
         self.use_offsets = use_offsets
         self.lr = lr
 
-        if decoder_name == 'actionness':
+        if 'actionness' in decoder_name:
             n_classes = 2
-        elif decoder_name == 'bio_tags':
+        elif 'bio_tags' in decoder_name:
             n_classes = 3
         else:
             raise ValueError(f"Unknown target decoder: {decoder_name}")
@@ -43,7 +43,7 @@ class SegmentationTrainer(TrainerBase):
 
         self.criterion = get_loss_function(criterion, criterion_weights)
 
-        self.decoder = get_target_decoder(decoder_name, decoder_args)
+        # self.decoder = get_target_decoder(decoder_name, decoder_args)
         self.save_hyperparameters()
 
         self.train_metrics = PerFrameMetrics(prefix='train/', n_classes=n_classes)
@@ -58,7 +58,12 @@ class SegmentationTrainer(TrainerBase):
         batch_size = encoded_targets.size(0)
 
         logits = self.backbone(features.float(), masks)
+
+        print('logits:', logits.shape)
+
         loss = self.criterion(logits, encoded_targets)
+        print('Loss:', loss)
+
         if self.backbone_name == 'mstcn':
             logits = logits[-1].permute(0, 2, 1).contiguous()
 
