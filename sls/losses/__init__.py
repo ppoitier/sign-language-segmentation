@@ -1,4 +1,4 @@
-from .mstcn import MSTCNLoss
+from .multi_layer_loss import MultiLayerLoss
 from .ce import CrossEntropyLoss
 from .focal_loss import FocalLoss
 from .generalized_iou import GeneralizedIoU

@@ -1,5 +1,6 @@
 from torch import Tensor, nn
 
+from sls.losses.ce import CrossEntropyLoss
 from sls.losses.generalized_iou import GeneralizedIoU
 
 
@@ -7,16 +8,16 @@ class ClassificationWithOffsetsLoss(nn.Module):
     def __init__(self, n_classes: int, reg_loss_coef: float = 1.0):
         super().__init__()
         self.n_classes = n_classes
-        self.cls_loss = nn.CrossEntropyLoss(ignore_index=-1)
-        self.reg_loss = GeneralizedIoU()
         self.reg_loss_coef = reg_loss_coef
 
-    def forward(self, logits: Tensor, targets: Tensor) -> tuple[Tensor, Tensor, Tensor]:
-        """
+        self.cls_loss = CrossEntropyLoss()
+        self.reg_loss = GeneralizedIoU()
 
+    def forward(self, multilayer_logits: Tensor, targets: Tensor) -> tuple[Tensor, Tensor, Tensor]:
+        """
             Args:
-                logits: tensor of shape (L, N, C_cls + C_reg, T)
-                targets: tensor of shape (N, C_cls + C_reg, T)
+                multilayer_logits: tensor of shape (L_layers, N, T, C_cls + C_reg)
+                targets: tensor of shape (N, T, 1 + C_reg)
 
             Returns:
                 loss
@@ -24,20 +25,17 @@ class ClassificationWithOffsetsLoss(nn.Module):
         cls_loss = 0
         reg_loss = 0
 
-        cls_targets = targets[:, 0].long()
-        reg_targets = targets[:, 1:]
+        cls_targets = targets[:, :, 0].long()
+        reg_targets = targets[:, :, 1:]
 
-        for layer in logits.unbind():
-            cls_logits = layer[:, :self.n_classes]
+        for logits in multilayer_logits.unbind():
+            cls_logits = logits[:, :, :self.n_classes]
             cls_loss += self.cls_loss(cls_logits, cls_targets)
 
-            reg_logits = layer[:, self.n_classes:]
-            reg_loss += self.reg_loss(
-                reg_logits.transpose(-1, -2).contiguous(),
-                reg_targets.transpose(-1, -2).contiguous(),
-            )
+            reg_logits = logits[:, :, self.n_classes:]
+            reg_loss += self.reg_loss(reg_logits, reg_targets)
 
-        return cls_loss + self.reg_loss_coef * reg_loss, cls_loss, reg_loss
+        return cls_loss + self.reg_loss_coef * reg_loss
 
 
 

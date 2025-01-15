@@ -22,4 +22,16 @@ class MSTCNBackbone(nn.Module):
         )
 
     def forward(self, x, mask):
-        return self.backbone(x.transpose(1, 2), mask.unsqueeze(1))
+        """
+        Args:
+            x: tensor of shape (N, T, C_in)
+            mask: tensor of shape (N, T)
+
+        Returns:
+            logits: tensor of shape (N_layers, N, T, C_in)
+        """
+        out = self.backbone(
+            x.transpose(-1, -2).contiguous(),
+            mask.unsqueeze(1).contiguous(),
+        )
+        return out.transpose(-1, -2).contiguous()

@@ -1,14 +1,14 @@
 from torch import Tensor
 
 from .focal_loss import FocalLoss
-from .mstcn import MSTCNLoss
+from .multi_layer_loss import MultiLayerLoss
 from .ce import CrossEntropyLoss
 from .cls_with_offsets import ClassificationWithOffsetsLoss
 
 
 def get_loss_function(criterion: str, criterion_weights: Tensor | None = None):
-    if criterion == 'mstcn':
-        return MSTCNLoss()
+    if criterion == 'multi-layer-ce':
+        return MultiLayerLoss()
     if criterion == 'ce':
         return CrossEntropyLoss(weights=criterion_weights)
     if criterion == 'focal_loss':
