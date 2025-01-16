@@ -13,6 +13,7 @@ def load_module(
         criterion: str,
         lr: float,
         use_offsets: bool,
+        multilayer_output: bool,
         criterion_weights: Tensor | None = None,
 ):
     return SegmentationTrainer(
@@ -25,4 +26,5 @@ def load_module(
         lr=lr,
         use_offsets=use_offsets,
         criterion_weights=criterion_weights,
+        multi_layer_output=multilayer_output,
     )

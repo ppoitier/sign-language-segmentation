@@ -19,6 +19,7 @@ class BackboneConfig(BaseModel):
     name: str
     args: dict[str, str | int | float | bool]
     checkpoint_path: str | None = None
+    multilayer_output: bool = False
 
 
 class EncoderConfig(BaseModel):

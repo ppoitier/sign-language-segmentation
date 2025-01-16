@@ -15,7 +15,7 @@ class OffsetsEncoder(TargetEncoder):
     def encode(self, segments: np.ndarray) -> np.ndarray:
         start_offsets = self.to_start_offset.transform(segments)
         end_offsets = self.to_end_offset.transform(segments)
-        return np.stack([start_offsets, end_offsets], axis=0)
+        return np.stack([start_offsets, end_offsets], axis=-1)
 
 
 class OffsetsWithSegmentationEncoder(TargetEncoder):
@@ -25,6 +25,13 @@ class OffsetsWithSegmentationEncoder(TargetEncoder):
         self.segments_encoder = segmentation_encoder
 
     def encode(self, segments: np.ndarray) -> np.ndarray:
+        """
+        Args:
+            segments: array of shape (M, 2) for M segments with a start and a end
+
+        Returns:
+            encoded_target: array of shape (T, C_cls + C_reg)
+        """
         segmentation = self.segments_encoder(segments)
         offsets = self.offset_encoder(segments)
-        return np.concatenate([segmentation[None, :], offsets], axis=0)
+        return np.concatenate([segmentation[:, None], offsets], axis=-1)

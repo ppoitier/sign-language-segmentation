@@ -25,11 +25,7 @@ def get_segments_in_range(segments, start, end):
 
 def get_window_from_instance(instance: dict, start: int, end: int):
     if isinstance(instance, np.ndarray) or isinstance(instance, list):
-        instance: np.ndarray
-        if len(instance.shape) == 2:
-            return instance[:, start:end]
-        else:
-            return instance[start:end]
+        return instance[start:end]
     elif isinstance(instance, dict):
         new_instance = dict()
         for k, v in instance.items():

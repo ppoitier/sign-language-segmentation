@@ -1,3 +1,4 @@
+import torch
 from torch import optim, Tensor
 
 from sls.trainers.base import TrainerBase
@@ -61,30 +62,29 @@ class SegmentationTrainer(TrainerBase):
 
         logits = self.backbone(features.float(), masks)
 
-        print('Logits (shape):', logits.shape)
-
         loss = self.criterion(logits, encoded_targets)
-        print('Loss:', loss)
+        if self.use_offsets:
+            loss, cls_loss, reg_loss = loss
+            self.log(f'{mode}_cls_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            self.log(f'{mode}_reg_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+        self.log(f'{mode}_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
 
         # If we have a multi-layer output, we take the last one (the most refined one)
         if self.multi_layer_output:
             logits = logits[-1]
-        # If we have offset channels, we only keep the classification channels
-        if self.use_offsets:
-            logits = logits[:, :, :self.n_classes]
+        # We only use classification channels for the per-frame metrics
+        per_frame_probs = logits[:, :, :self.n_classes].softmax(dim=-1)
+        cls_targets = encoded_targets[:, :, 0]
 
-        per_frame_probs = logits.softmax(dim=-1)
-        # Permute to fit the torchmetrics specifications
-        per_frame_probs = per_frame_probs.permute(0, 2, 1).contiguous()
+        # Permute dimensions to correspond to the torchmetrics specifications
+        per_frame_probs = per_frame_probs.transpose(-1, -2).contiguous()
+
         if mode == 'training':
-            metrics = self.train_metrics(per_frame_probs, encoded_targets)
-            self.log('train_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            metrics = self.train_metrics(per_frame_probs, cls_targets)
         elif mode == 'validation':
-            metrics = self.val_metrics(per_frame_probs, encoded_targets)
-            self.log('val_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            metrics = self.val_metrics(per_frame_probs, cls_targets)
         else:
-            metrics = self.test_metrics(per_frame_probs, encoded_targets)
-            self.log('test_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            metrics = self.test_metrics(per_frame_probs, cls_targets)
         self.log_metrics(metrics, batch_size=batch_size)
         return logits, loss
 
@@ -106,7 +106,11 @@ class SegmentationTrainer(TrainerBase):
             per_frame_preds = logits.argmax(dim=-1)
             pred_segments = self.decoder(per_frame_preds)
         else:
-            raise NotImplemented()
+            probs_with_offsets = torch.concatenate([
+                logits[:, :, :self.n_classes].softmax(dim=-1),
+                logits[:, :, self.n_classes:],
+            ], dim=-1)
+            pred_segments = self.decoder(probs_with_offsets)
 
         segment_metrics = self.test_segment_metrics(pred_segments, gt_segments)
         self.log_metrics(segment_metrics, batch_size=batch_size)

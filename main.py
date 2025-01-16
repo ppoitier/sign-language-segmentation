@@ -80,6 +80,7 @@ def launch_experiment(config_path: str):
         criterion_weights=criterion_weights,
         lr=config.training.learning_rate,
         use_offsets=config.target.offsets,
+        multilayer_output=config.backbone.multilayer_output,
     )
 
     exp_name, exp_id = config.experiment.name, int(time() % 1e6)

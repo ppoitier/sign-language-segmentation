@@ -35,7 +35,7 @@ class ClassificationWithOffsetsLoss(nn.Module):
             reg_logits = logits[:, :, self.n_classes:]
             reg_loss += self.reg_loss(reg_logits, reg_targets)
 
-        return cls_loss + self.reg_loss_coef * reg_loss
+        return cls_loss + self.reg_loss_coef * reg_loss, cls_loss, reg_loss
 
 
 

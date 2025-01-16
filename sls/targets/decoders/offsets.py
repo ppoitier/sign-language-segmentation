@@ -16,6 +16,8 @@ class OffsetsDecoder(TargetDecoder):
         self.soft_nms_threshold = soft_nms_threshold
 
     def decode(self, encoded: np.ndarray) -> np.ndarray:
+        raise NotImplementedError("Offset decoder not implemented yet.")
+
         per_frame_probs = encoded[0]
         start_offsets = encoded[1]
         end_offsets = encoded[2]
