@@ -33,7 +33,7 @@ target:
 
 training:
   batch_size: 8
-  n_workers: 7
+  n_workers: 2
   criterion: 'offsets+actionness'
   learning_rate: 2e-4
   n_epochs: 200
