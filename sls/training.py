@@ -23,7 +23,7 @@ def run_training(
             dirpath=checkpoints_dir,
             save_top_k=1,
             save_last=True,
-            monitor="val_loss",
+            monitor="validation_loss",
         )
     callbacks = [
         checkpoint_callback,
@@ -33,7 +33,7 @@ def run_training(
             log_weight_decay=True,
         ),
         EarlyStopping(
-            monitor="val_loss",
+            monitor="validation_loss",
             patience=early_stopping_patience,
         )
     ]
