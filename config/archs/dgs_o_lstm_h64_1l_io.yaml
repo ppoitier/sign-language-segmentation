@@ -7,8 +7,8 @@ dataset:
 
 preprocessing:
   use_windows: true
-  window_size: 1500
-  window_stride: 1200
+  window_size: 3500
+  window_stride: 2800
   transforms_pipeline: 'optical-flow'
 
 backbone:

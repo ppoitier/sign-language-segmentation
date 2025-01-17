@@ -1,0 +1,10 @@
+from: "dgs_o_mstcn_h64_4s_6l_io.yaml"
+
+backbone:
+  args:
+    hidden_channels: 128
+    n_stages: 4
+    n_layers: 6
+
+experiment:
+  name: "dgs_o_mstcn_h128_4s_6l_io"

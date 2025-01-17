@@ -1,0 +1,18 @@
+from: "dgs_o_lstm_h64_1l_io.yaml"
+
+backbone:
+  name: 'mstcn'
+  multilayer_output: true
+  args:
+    in_channels: 65
+    hidden_channels: 64
+    n_stages: 4
+    n_layers: 6
+    out_channels: 2
+
+training:
+  criterion: 'multi-layer-ce'
+  gradient_clipping: 0.0
+
+experiment:
+  name: "dgs_o_mstcn_h64_4s_6l_io"
