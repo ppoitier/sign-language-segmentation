@@ -1,0 +1,8 @@
+from: "dgs_o_lstm_h64_1l_io.yaml"
+
+backbone:
+  args:
+    n_layers: 2
+
+experiment:
+  name: "dgs_o_lstm_h64_2l_io"

@@ -1,0 +1,8 @@
+from: "dgs_o_lstm_h64_1l_io.yaml"
+
+backbone:
+  args:
+    hidden_channels: 256
+
+experiment:
+  name: "dgs_o_lstm_h256_1l_io"
