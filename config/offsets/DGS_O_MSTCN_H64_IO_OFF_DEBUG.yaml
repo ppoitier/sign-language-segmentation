@@ -14,6 +14,7 @@ preprocessing:
 backbone:
   name: 'mstcn'
   multilayer_output: true
+  checkpoint_path: "/run/media/ppoitier/ppoitier/output/sls/offsets/checkpoints/dgs_o_mstcn_h64_io_off_22706/epoch=44-step=47925.ckpt"
   args:
     in_channels: 65
     hidden_channels: 64
@@ -29,7 +30,10 @@ target:
     args: {}
   decoder:
     name: 'offsets+actionness'
-    args: {}
+    args:
+      soft_nms_method: 'gaussian'
+      soft_nms_sigma: 0.1
+      soft_nms_threshold: 0.2
 
 training:
   batch_size: 8
@@ -40,10 +44,10 @@ training:
   gradient_clipping: 0.0
   early_stopping_patience: 5
   criterion_use_weights: false
-  skip_training: false
-  skip_testing: true
+  skip_training: true
+  skip_testing: false
 
 experiment:
   name: "dgs_o_mstcn_h64_io_off"
-  debug: true
+  debug: false
   out_dir: "/run/media/ppoitier/ppoitier/output/sls/offsets"

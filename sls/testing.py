@@ -2,7 +2,7 @@ from typing import Literal
 
 from torch.utils.data import DataLoader
 import lightning as pl
-from lightning.pytorch.loggers import TensorBoardLogger
+from lightning.pytorch.loggers import TensorBoardLogger, CSVLogger
 
 from sls.trainers.base import TrainerBase
 
@@ -14,10 +14,11 @@ def run_testing(
     log_dir: str,
     debug: bool = False,
 ):
-    logger = TensorBoardLogger(save_dir=log_dir)
+    tb_logger = TensorBoardLogger(name="tb", save_dir=log_dir)
+    csv_logger = CSVLogger(name="csv", save_dir=log_dir)
     trainer = pl.Trainer(
         fast_dev_run=debug,
-        logger=logger,
+        logger=[tb_logger, csv_logger],
     )
     trainer.test(
         module,

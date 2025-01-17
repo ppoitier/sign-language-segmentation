@@ -16,5 +16,5 @@ def generate_proposals(start_offsets, end_offsets, min_duration=1, return_indice
             ((proposals[:, 1] - proposals[:, 0] + 1) >= min_duration)
     )
     if return_indices:
-        return proposals[valid_mask], t[valid_mask]
+        return proposals[valid_mask], t[valid_mask].astype('int32')
     return proposals[valid_mask]

@@ -44,4 +44,4 @@ training:
 experiment:
   name: "w1500_dgs_o_mstcn_h64_io"
   debug: false
-  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs"
+  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/exp_windows"

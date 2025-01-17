@@ -28,3 +28,8 @@ def load_module(
         criterion_weights=criterion_weights,
         multi_layer_output=multilayer_output,
     )
+
+
+def load_module_from_checkpoint(checkpoint_path: str):
+    map_location = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    return SegmentationTrainer.load_from_checkpoint(checkpoint_path, map_location=map_location)
