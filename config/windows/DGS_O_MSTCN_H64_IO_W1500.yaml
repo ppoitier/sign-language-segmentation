@@ -13,6 +13,7 @@ preprocessing:
 
 backbone:
   name: 'mstcn'
+  multilayer_output: true
   args:
     in_channels: 65
     hidden_channels: 64
@@ -32,9 +33,9 @@ target:
 training:
   batch_size: 8
   n_workers: 1
-  criterion: 'mstcn'
-  learning_rate: 1e-3
-  n_epochs: 150
+  criterion: 'multi-layer-ce'
+  learning_rate: 2e-4
+  n_epochs: 200
   gradient_clipping: 0.0
   early_stopping_patience: 5
   criterion_use_weights: false
