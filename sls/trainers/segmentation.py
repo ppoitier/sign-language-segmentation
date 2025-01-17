@@ -74,7 +74,10 @@ class SegmentationTrainer(TrainerBase):
             logits = logits[-1]
         # We only use classification channels for the per-frame metrics
         per_frame_probs = logits[:, :, :self.n_classes].softmax(dim=-1)
-        cls_targets = encoded_targets[:, :, 0]
+        if self.use_offsets:
+            cls_targets = encoded_targets[:, :, 0]
+        else:
+            cls_targets = encoded_targets
 
         # Permute dimensions to correspond to the torchmetrics specifications
         per_frame_probs = per_frame_probs.transpose(-1, -2).contiguous()
