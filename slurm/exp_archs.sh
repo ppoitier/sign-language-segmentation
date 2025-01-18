@@ -15,7 +15,7 @@
 #
 #SBATCH --account=lsfb
 #
-#SBATCH --output=./out/win/dgs_%A_%a.out
+#SBATCH --output=./out/archs/dgs_%A_%a.out
 
 module purge
 module load EasyBuild/2022a
