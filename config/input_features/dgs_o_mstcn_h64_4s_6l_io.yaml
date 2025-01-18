@@ -1,3 +1,4 @@
+
 dataset:
   root: "/gpfs/scratch/acad/lsfb/datasets/dgs_corpus"
   train_shards_url: "shards/shard_{000000..000002}.tar"
@@ -44,4 +45,4 @@ training:
 experiment:
   name: "dgs_o_mstcn_h64_4s_6l_io"
   debug: false
-  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/exp_archs"
+  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/exp_features"

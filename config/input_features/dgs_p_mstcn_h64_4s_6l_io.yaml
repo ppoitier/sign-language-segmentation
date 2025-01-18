@@ -1,0 +1,8 @@
+from: "dgs_o_mstcn_h64_4s_6l_io.yaml"
+
+preprocessing:
+  transform_pipeline: "flatten-pose"
+
+backbone:
+  args:
+    in_channels: 130
