@@ -27,7 +27,7 @@ def get_target_decoder(decoder_name: str, decoder_args: dict):
         return ActionnessDecoder()
     elif decoder_name == "bio_tags":
         return BIOTagDecoder()
-    elif decoder_name == 'offsets+actionness':
+    elif 'offsets' in decoder_name:
         return OffsetsDecoder(**decoder_args)
     else:
         raise ValueError(f"Unknown target decoder: {decoder_name}")

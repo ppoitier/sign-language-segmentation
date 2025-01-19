@@ -10,7 +10,7 @@ class OffsetsDecoder(TargetDecoder):
         self,
         n_classes: int = 2,
         soft_nms_method: str = 'gaussian',
-        soft_nms_sigma: float = 0.5,
+        soft_nms_sigma: float = 0.2,
         soft_nms_threshold: float = 0.2,
     ):
         super().__init__()
@@ -29,7 +29,7 @@ class OffsetsDecoder(TargetDecoder):
         )
         proposals, _ = soft_nms(
             proposals,
-            scores=probs[proposal_indices, 1],
+            scores=1 - probs[proposal_indices, 0],
             method=self.soft_nms_method,
             sigma=self.soft_nms_sigma,
             threshold=self.soft_nms_threshold,

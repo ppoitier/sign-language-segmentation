@@ -15,4 +15,6 @@ def get_loss_function(criterion: str, criterion_weights: Tensor | None = None):
         return FocalLoss(weights=criterion_weights)
     if criterion == 'offsets+actionness':
         return ClassificationWithOffsetsLoss(n_classes=2)
+    if criterion == 'offsets+bio_tags':
+        return ClassificationWithOffsetsLoss(n_classes=3)
     raise ValueError(f'Unknown criterion: {criterion}.')

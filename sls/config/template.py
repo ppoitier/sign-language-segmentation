@@ -9,7 +9,8 @@ class DatasetConfig(BaseModel):
 
 
 class Preprocessing(BaseModel):
-    transforms_pipeline: str = 'default'
+    transforms_pipeline: str = 'none'
+    segment_transforms_pipeline: str = 'none'
     use_windows: bool = False
     window_size: int = 1500
     window_stride: int = 1200

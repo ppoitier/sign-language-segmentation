@@ -14,6 +14,7 @@ from sls.datasets.utils.collate import collate_fixed_size, collate_varying_size
 def _map_fn(
     encoder_name: str,
     encoder_args: dict,
+    segment_transform,
     include_i3d_features: bool,
 ):
     segmentation_to_segments = SegmentationVectorToSegments(
@@ -27,6 +28,10 @@ def _map_fn(
         class_segmentation = sample["per_frame_class_segmentation.npy"].astype("int32")
         segments = segmentation_to_segments(class_segmentation)
         segments = segments[:, :]
+
+        transformed_segments = segments[:, :2].copy()
+        if segment_transform is not None:
+            transformed_segments = segment_transform(transformed_segments)
 
         encoder = get_target_encoder(
             encoder_name=encoder_name,
@@ -45,7 +50,7 @@ def _map_fn(
                     "segmentation": binary_segmentation,
                     "segments": segments,
                 },
-                encoder_name: encoder(segments[:, :2]),
+                encoder_name: encoder(transformed_segments),
             },
         }
         if include_i3d_features:
@@ -62,6 +67,7 @@ class DenselyAnnotatedSLDataset(Dataset):
         encoder: str,
         encoder_args: dict,
         transform=None,
+        segment_transform=None,
         show_progress: bool = False,
         include_i3d_features: bool = False,
         use_windows: bool = False,
@@ -78,7 +84,7 @@ class DenselyAnnotatedSLDataset(Dataset):
             wds.split_by_worker,
             wds.tarfile_to_samples(),
             wds.decode(),
-            wds.map(_map_fn(encoder, encoder_args, include_i3d_features)),
+            wds.map(_map_fn(encoder, encoder_args, segment_transform, include_i3d_features)),
         )
         if show_progress:
             print(f"Loading dataset [{url}].", flush=True)
@@ -125,6 +131,7 @@ def load_datasets(
     encoder_args: dict,
     show_progress: bool = True,
     transform=None,
+    segment_transform=None,
     use_windows: bool = False,
     window_size: int = 1500,
     window_stride: int = 1200,
@@ -134,6 +141,7 @@ def load_datasets(
             url=f"{root}/{training_shards}",
             show_progress=show_progress,
             transform=transform,
+            segment_transform=segment_transform,
             encoder=encoder_name,
             encoder_args=encoder_args,
             use_windows=use_windows,
@@ -144,6 +152,7 @@ def load_datasets(
             url=f"{root}/{validation_shards}",
             show_progress=show_progress,
             transform=transform,
+            segment_transform=segment_transform,
             encoder=encoder_name,
             encoder_args=encoder_args,
             use_windows=use_windows,

@@ -1,0 +1,22 @@
+from: "dgs_o_mstcn_h64_4s_6l_io.yaml"
+
+backbone:
+  args:
+    # 3 for classification, and 2 for offsets
+    out_channels: 5
+
+target:
+  offsets: true
+  encoder:
+    name: 'offsets+bio_tags'
+    args: {}
+  decoder:
+    name: 'offsets+bio_tags'
+    args:
+      n_classes: 3
+
+training:
+  criterion: "offsets+bio_tags"
+
+experiment:
+  name: "dgs_o_mstcn_h64_4s_6l_bio_off"

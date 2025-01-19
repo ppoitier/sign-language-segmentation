@@ -1,0 +1,22 @@
+from: "dgs_o_mstcn_h64_4s_6l_io.yaml"
+
+backbone:
+  args:
+    # 2 for classification, and 2 for offsets
+    out_channels: 4
+
+target:
+  offsets: true
+  encoder:
+    name: 'offsets+actionness'
+    args: {}
+  decoder:
+    name: 'offsets+actionness'
+    args:
+      n_classes: 2
+
+training:
+  criterion: "offsets+actionness"
+
+experiment:
+  name: "dgs_o_mstcn_h64_4s_6l_io_off"

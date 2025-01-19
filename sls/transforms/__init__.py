@@ -1,1 +1,1 @@
-from sls.transforms.utils import get_transform_pipeline
+from sls.transforms.utils import get_transform_pipeline, get_segment_transform_pipeline

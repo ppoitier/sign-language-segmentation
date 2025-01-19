@@ -1,7 +1,0 @@
-from: "DGS_O_LSTM_H256_2L_BIO_W.yaml"
-
-training:
-  criterion: "focal_loss"
-
-experiment:
-  name: "dgs_o_lstm_h256_2l_bio_wf"

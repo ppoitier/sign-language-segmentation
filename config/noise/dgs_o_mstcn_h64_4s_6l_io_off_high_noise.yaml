@@ -1,0 +1,7 @@
+from: "dgs_o_mstcn_h64_4s_6l_io_off_low_noise"
+
+preprocessing:
+  segment_transforms_pipeline: 'high-noise'
+
+experiment:
+  name: "dgs_o_mstcn_h64_4s_6l_io_off_high_noise"

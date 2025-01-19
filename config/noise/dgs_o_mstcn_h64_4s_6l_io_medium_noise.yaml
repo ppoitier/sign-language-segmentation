@@ -1,0 +1,23 @@
+from: "dgs_o_mstcn_h64_4s_6l_io_off_low_noise"
+
+preprocessing:
+  segment_transforms_pipeline: 'medium-noise'
+
+target:
+  offsets: false
+  encoder:
+    name: 'actionness'
+    args: {}
+  decoder:
+    name: 'actionness'
+    args: {}
+
+backbone:
+  args:
+    out_channels: 2
+
+training:
+  criterion: 'multi-layer-ce'
+
+experiment:
+  name: "dgs_o_mstcn_h64_4s_6l_io_medium_noise"

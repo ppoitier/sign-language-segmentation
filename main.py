@@ -14,7 +14,7 @@ from sls.datasets.densely_annotated import load_datasets, load_dataloaders
 from sls.datasets.utils.stats import get_class_stats
 from sls.training import run_training
 from sls.testing import run_testing
-from sls.transforms import get_transform_pipeline
+from sls.transforms import get_transform_pipeline, get_segment_transform_pipeline
 
 
 @click.command()
@@ -41,6 +41,7 @@ def launch_experiment(config_path: str):
         encoder_name=config.target.encoder.name,
         encoder_args=config.target.encoder.args,
         transform=get_transform_pipeline(config.preprocessing.transforms_pipeline),
+        segment_transform=get_segment_transform_pipeline(config.preprocessing.segment_transforms_pipeline),
         use_windows=config.preprocessing.use_windows,
         window_size=config.preprocessing.window_size,
         window_stride=config.preprocessing.window_stride,

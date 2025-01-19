@@ -7,9 +7,10 @@ dataset:
 
 preprocessing:
   use_windows: true
-  window_size: 1500
-  window_stride: 1200
+  window_size: 3500
+  window_stride: 2800
   transforms_pipeline: 'optical-flow'
+  segment_transforms_pipeline: 'low-noise'
 
 backbone:
   name: 'mstcn'
@@ -19,7 +20,6 @@ backbone:
     hidden_channels: 64
     n_stages: 4
     n_layers: 6
-    # 2 for classification, and 2 for offsets
     out_channels: 4
 
 target:
@@ -33,17 +33,17 @@ target:
 
 training:
   batch_size: 8
-  n_workers: 2
+  n_workers: 1
   criterion: 'offsets+actionness'
   learning_rate: 2e-4
   n_epochs: 200
   gradient_clipping: 0.0
-  early_stopping_patience: 5
+  early_stopping_patience: 10
   criterion_use_weights: false
   skip_training: false
-  skip_testing: true
+  skip_testing: false
 
 experiment:
-  name: "dgs_o_mstcn_h64_io_off"
+  name: "dgs_o_mstcn_h64_4s_6l_io_off_low_noise"
   debug: false
-  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs"
+  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/exp_noise"

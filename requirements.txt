@@ -4,6 +4,7 @@ numpy
 pandas
 pydantic
 tensorboard
+tqdm
 torch
 torchmetrics
 webdataset
