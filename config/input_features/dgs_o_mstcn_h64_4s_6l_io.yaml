@@ -1,9 +1,9 @@
 
 dataset:
   root: "/gpfs/scratch/acad/lsfb/datasets/dgs_corpus"
-  train_shards_url: "shards/shard_{000000..000002}.tar"
-  val_shards_url: "shards/shard_000003.tar"
-  test_shards_url: "shards/shard_000004.tar"
+  train_shards_url: "shards_processed/shard_{000000..000002}.tar"
+  val_shards_url: "shards_processed/shard_000003.tar"
+  test_shards_url: "shards_processed/shard_000004.tar"
 
 preprocessing:
   use_windows: true

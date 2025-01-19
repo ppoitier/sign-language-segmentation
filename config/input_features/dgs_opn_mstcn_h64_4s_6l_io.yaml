@@ -1,8 +1,11 @@
 from: "dgs_o_mstcn_h64_4s_6l_io.yaml"
 
 preprocessing:
-  transform_pipeline: "norm+flatten-pose+optical-flow"
+  transforms_pipeline: "norm+flatten-pose||norm+optical-flow"
 
 backbone:
   args:
-    in_channels: 130
+    in_channels: 195
+
+experiment:
+  name: "dgs_opn_mstcn_h64_4s_6l_io"
