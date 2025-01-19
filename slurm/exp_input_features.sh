@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-3
+#SBATCH --array=0-5
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -29,6 +29,8 @@ config_files=(
   "../config/input_features/dgs_on_mstcn_h64_4s_6l_io.yaml"
   "../config/input_features/dgs_p_mstcn_h64_4s_6l_io.yaml"
   "../config/input_features/dgs_pn_mstcn_h64_4s_6l_io.yaml"
+  "../config/input_features/dgs_op_mstcn_h64_4s_6l_io.yaml"
+  "../config/input_features/dgs_opn_mstcn_h64_4s_6l_io.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}
