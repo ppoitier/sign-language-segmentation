@@ -25,8 +25,10 @@ module load Python/3.10.4-GCCcore-11.3.0
 source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 
 config_files=(
-  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce.yaml"
-  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl.yaml"
+#  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce.yaml"
+#  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl.yaml"
+  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce_ns.yaml"
+  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl_ns.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}

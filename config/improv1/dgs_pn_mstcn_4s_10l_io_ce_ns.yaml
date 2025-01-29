@@ -1,0 +1,7 @@
+from: "dgs_pn_mstcn_4s_10l_io_ce.yaml"
+
+training:
+  criterion: 'multi-layer+ce'
+
+experiment:
+  name: "dgs_pn_mstcn_4s_10l_io_ce_ns"
