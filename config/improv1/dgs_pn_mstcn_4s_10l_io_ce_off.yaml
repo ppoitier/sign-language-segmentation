@@ -1,0 +1,22 @@
+from: "dgs_pn_mstcn_4s_10l_io_ce.yaml"
+
+backbone:
+  args:
+    # 2 for classification, and 2 for offsets
+    out_channels: 4
+
+target:
+  offsets: true
+  encoder:
+    name: 'offsets+actionness'
+    args: {}
+  decoder:
+    name: 'offsets+actionness'
+    args:
+      n_classes: 2
+
+training:
+  criterion: 'multi-layer+ce+smoothing+offsets'
+
+experiment:
+  name: "dgs_pn_mstcn_4s_10l_io_ce_off"

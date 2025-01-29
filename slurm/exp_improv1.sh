@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-1
+#SBATCH --array=0-0
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -27,8 +27,9 @@ source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 config_files=(
 #  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce.yaml"
 #  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl.yaml"
-  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce_ns.yaml"
-  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl_ns.yaml"
+#  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce_ns.yaml"
+#  "../config/improv1/dgs_pn_mstcn_4s_10l_io_fl_ns.yaml"
+  "../config/improv1/dgs_pn_mstcn_4s_10l_io_ce_off.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}

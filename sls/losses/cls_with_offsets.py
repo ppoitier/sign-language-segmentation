@@ -97,9 +97,9 @@ class MultiLayerClassificationWithOffsetsLoss(nn.Module):
 
         for logits in multilayer_logits.unbind(0):
             cls_logits = logits[:, :, : self.n_classes]
-            cls_loss += self.cls_loss(cls_logits, cls_targets)
+            cls_loss += self.cls_loss_fn(cls_logits, cls_targets)
             reg_logits = logits[:, :, self.n_classes :]
-            reg_loss += self.reg_loss(reg_logits, reg_targets)
+            reg_loss += self.reg_loss_fn(reg_logits, reg_targets)
 
         loss = cls_loss + self.reg_loss_coef * reg_loss
         if self.return_loss_components:
