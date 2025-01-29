@@ -1,0 +1,48 @@
+
+dataset:
+  root: "/run/media/ppoitier/ppoitier/datasets/sign-languages/dgs_corpus"
+  train_shards_url: "shards_processed/shard_{000000..000002}.tar"
+  val_shards_url: "shards_processed/shard_000003.tar"
+  test_shards_url: "shards_processed/shard_000004.tar"
+
+preprocessing:
+  use_windows: true
+  window_size: 3500
+  window_stride: 2800
+  transforms_pipeline: "norm+flatten-pose"
+
+backbone:
+  name: 'mstcn'
+  multilayer_output: true
+  args:
+    in_channels: 130
+    hidden_channels: 64
+    n_stages: 4
+    n_layers: 10
+    out_channels: 2
+
+target:
+  offsets: false
+  encoder:
+    name: 'actionness'
+    args: {}
+  decoder:
+    name: 'actionness'
+    args: {}
+
+training:
+  batch_size: 4
+  n_workers: 8
+  criterion: 'multi-layer+fl+smoothing'
+  learning_rate: 2e-4
+  n_epochs: 200
+  gradient_clipping: 0.0
+  early_stopping_patience: 10
+  criterion_use_weights: false
+  skip_training: false
+  skip_testing: true
+
+experiment:
+  name: "dgs_mstcn_4s_10l_io_ce"
+  debug: true
+  out_dir: "out"

@@ -1,20 +1,22 @@
 from torch import Tensor
 
-from .focal_loss import FocalLoss
-from .multi_layer_loss import MultiLayerLoss
 from .ce import CrossEntropyLoss
-from .cls_with_offsets import ClassificationWithOffsetsLoss
+from .focal_loss import FocalLoss
+from .cls_with_smoothing import MultiLayerClassificationLossWithSmoothing
 
 
-def get_loss_function(criterion: str, criterion_weights: Tensor | None = None):
-    if criterion == 'multi-layer-ce':
-        return MultiLayerLoss()
-    if criterion == 'ce':
-        return CrossEntropyLoss(weights=criterion_weights)
-    if criterion == 'focal_loss':
-        return FocalLoss(weights=criterion_weights)
-    if criterion == 'offsets+actionness':
-        return ClassificationWithOffsetsLoss(n_classes=2)
-    if criterion == 'offsets+bio_tags':
-        return ClassificationWithOffsetsLoss(n_classes=3)
+def get_loss_function(
+        criterion: str,
+        criterion_weights: Tensor | None = None,
+):
+    if criterion == 'multi-layer+ce+smoothing':
+        return MultiLayerClassificationLossWithSmoothing(
+            cls_loss_fn=CrossEntropyLoss(weights=criterion_weights),
+            return_loss_components=False,
+        )
+    elif criterion == 'multi-layer+fl+smoothing':
+        return MultiLayerClassificationLossWithSmoothing(
+            cls_loss_fn=FocalLoss(weights=criterion_weights),
+            return_loss_components=False,
+        )
     raise ValueError(f'Unknown criterion: {criterion}.')
