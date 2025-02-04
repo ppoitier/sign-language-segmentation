@@ -3,6 +3,7 @@ lightning
 numpy
 pandas
 pydantic
+scipy
 tensorboard
 tqdm
 torch

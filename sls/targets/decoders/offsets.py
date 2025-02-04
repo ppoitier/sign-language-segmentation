@@ -27,9 +27,10 @@ class OffsetsDecoder(TargetDecoder):
             end_offsets=pred_offsets[:, 1],
             return_indices=True,
         )
+        proposal_scores = 1 - probs[proposal_indices, 0]
         proposals, _ = soft_nms(
             proposals,
-            scores=1 - probs[proposal_indices, 0],
+            scores=proposal_scores,
             method=self.soft_nms_method,
             sigma=self.soft_nms_sigma,
             threshold=self.soft_nms_threshold,

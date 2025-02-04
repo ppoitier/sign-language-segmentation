@@ -13,7 +13,7 @@ from sls.config.utils import load_config
 from sls.datasets.densely_annotated import load_datasets, load_dataloaders
 from sls.datasets.utils.stats import get_class_stats
 from sls.training import run_training
-from sls.testing import run_testing
+from sls.testing import run_testing, save_results
 from sls.transforms import get_transform_pipeline, get_segment_transform_pipeline
 
 
@@ -87,6 +87,8 @@ def launch_experiment(config_path: str):
     exp_name, exp_id = config.experiment.name, int(time() % 1e6)
     log_dir = f"{config.experiment.out_dir}/logs/{exp_name}_{exp_id}"
     print(f"Logs destination: {log_dir}")
+    results_dir = f"{config.experiment.out_dir}/results/{exp_name}_{exp_id}"
+    print(f"Results destination: {results_dir}")
     checkpoint_dir = f"{config.experiment.out_dir}/checkpoints/{exp_name}_{exp_id}"
     print(f"Checkpoints destination: {checkpoint_dir}")
 
@@ -117,6 +119,11 @@ def launch_experiment(config_path: str):
             log_dir=log_dir,
             debug=config.experiment.debug,
         )
+        if not config.experiment.debug:
+            save_results(
+                results=module.test_results,
+                results_dir=results_dir,
+            )
     print("Done.")
 
 

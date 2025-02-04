@@ -55,6 +55,12 @@ class SegmentationTrainer(TrainerBase):
 
         self.test_segment_metrics = PerSegmentMetrics(prefix='test/')
 
+        self.test_results = dict(
+            ids=[],
+            logits=[],
+            masks=[],
+        )
+
     def prediction_step(self, batch, mode: str):
         _, features, masks, targets = batch
         encoded_targets = targets[self.encoder_name].long()
@@ -99,8 +105,11 @@ class SegmentationTrainer(TrainerBase):
         self.prediction_step(batch, mode='validation')
 
     def test_step(self, batch, batch_idx):
-        _, features, masks, targets = batch
+        instance_ids, features, masks, targets = batch
         logits, _ = self.prediction_step(batch, mode='test')
+        self.test_results['ids'].append(instance_ids)
+        self.test_results['logits'].append(logits.detach().cpu())
+        self.test_results['masks'].append(masks.detach().cpu())
         gt_segmentation = targets[self.encoder_name].long()
         gt_segments = targets['ground_truth']['segments']
         batch_size = gt_segmentation.size(0)
@@ -117,6 +126,11 @@ class SegmentationTrainer(TrainerBase):
 
         segment_metrics = self.test_segment_metrics(pred_segments, gt_segments)
         self.log_metrics(segment_metrics, batch_size=batch_size)
+
+    def on_test_epoch_end(self):
+        self.test_results['ids'] = sum(self.test_results['ids'], start=[])
+        self.test_results['logits'] = torch.concatenate(self.test_results['logits'], dim=0)
+        self.test_results['masks'] = torch.concatenate(self.test_results['masks'], dim=0)
 
     def configure_optimizers(self):
         return optim.AdamW(self.parameters(), lr=self.lr)

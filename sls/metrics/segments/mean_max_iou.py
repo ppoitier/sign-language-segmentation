@@ -2,7 +2,7 @@ from torchmetrics import Metric
 import torch
 from torch import Tensor
 
-from .utils import compute_iou_matrix
+from .functional import compute_iou_matrix
 
 
 class MeanMaxIoUOverSegments(Metric):
