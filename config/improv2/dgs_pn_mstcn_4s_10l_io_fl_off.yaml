@@ -19,4 +19,4 @@ training:
   criterion: 'multi-layer+fl+smoothing+offsets'
 
 experiment:
-  name: "dgs_pn_mstcn_4s_10l_io_ce_off"
+  name: "dgs_pn_mstcn_4s_10l_io_fl_off"
