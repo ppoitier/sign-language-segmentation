@@ -45,4 +45,4 @@ training:
 experiment:
   name: "dgs_io"
   debug: false
-  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/gamma1"
+  out_dir: "/gpfs/scratch/acad/lsfb/out/dgs/alpha1"
