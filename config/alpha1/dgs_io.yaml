@@ -28,7 +28,10 @@ target:
     args: {}
   decoder:
     name: 'actionness'
-    args: {}
+    args:
+      soft_nms_method: 'gaussian'
+      soft_nms_sigma: 0.2
+      soft_nms_threshold: 0.5
 
 training:
   batch_size: 8
@@ -37,7 +40,7 @@ training:
   learning_rate: 2e-4
   n_epochs: 200
   gradient_clipping: 0.0
-  early_stopping_patience: 10
+  early_stopping_patience: 30
   criterion_use_weights: false
   skip_training: false
   skip_testing: false

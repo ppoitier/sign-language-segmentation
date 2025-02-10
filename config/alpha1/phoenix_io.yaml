@@ -7,7 +7,9 @@ dataset:
   test_shards_url: "shards/shard_000002.tar"
 
 preprocessing:
-  use_windows: false
+  use_windows: true
+  window_size: 300
+  window_stride: 240
 
 experiment:
   name: "phoenix_io"
