@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 
@@ -49,3 +51,14 @@ def convert_instances_to_windows(instances: list[dict], window_size: int, stride
         window_indices = compute_window_indices(seq_len, window_size, stride)
         new_instances += subdivide_instance_into_windows(instance, window_indices)
     return new_instances
+
+
+def filter_empty_windows(instances: list[dict], empty_window_max_nb: int):
+    empty_window_indices = [
+        i for i, instance in enumerate(instances)
+        if instance['targets']['ground_truth']['segments'].shape[0] < 1
+    ]
+    kept_empty_windows = random.sample(empty_window_indices, empty_window_max_nb)
+    removed_windows_indices = set(empty_window_indices).difference(set(kept_empty_windows))
+    return [instance for i, instance in enumerate(instances) if i not in removed_windows_indices]
+

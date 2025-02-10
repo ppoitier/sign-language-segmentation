@@ -7,7 +7,7 @@ from sign_language_tools.common.transforms import Compose
 from sign_language_tools.pose.transform import Concatenate, Flatten
 
 from sls.targets import get_target_encoder
-from sls.datasets.utils.windows import convert_instances_to_windows
+from sls.datasets.utils.windows import convert_instances_to_windows, filter_empty_windows
 from sls.datasets.utils.collate import collate_fixed_size, collate_varying_size
 
 
@@ -73,6 +73,7 @@ class DenselyAnnotatedSLDataset(Dataset):
         use_windows: bool = False,
         window_size: int = 1500,
         window_stride: int = 1200,
+        max_empty_window_nb: int | None = None,
     ):
         super().__init__()
         self.encoder = encoder
@@ -97,6 +98,9 @@ class DenselyAnnotatedSLDataset(Dataset):
             self.samples = convert_instances_to_windows(
                 self.samples, window_size, window_stride
             )
+            if max_empty_window_nb is not None:
+                print("Filtering empty windows...")
+                self.samples = filter_empty_windows(self.samples, max_empty_window_nb)
             print(f"From {n_instances} instances to {len(self.samples)} windows.")
 
     def __len__(self):
@@ -135,6 +139,7 @@ def load_datasets(
     use_windows: bool = False,
     window_size: int = 1500,
     window_stride: int = 1200,
+    max_empty_window_nb: int | None = None,
 ):
     return {
         "training": DenselyAnnotatedSLDataset(
@@ -147,6 +152,7 @@ def load_datasets(
             use_windows=use_windows,
             window_size=window_size,
             window_stride=window_stride,
+            max_empty_window_nb=max_empty_window_nb,
         ),
         "validation": DenselyAnnotatedSLDataset(
             url=f"{root}/{validation_shards}",
@@ -158,6 +164,7 @@ def load_datasets(
             use_windows=use_windows,
             window_size=window_size,
             window_stride=window_stride,
+            max_empty_window_nb=max_empty_window_nb,
         ),
     }
 

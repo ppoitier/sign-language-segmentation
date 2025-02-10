@@ -45,6 +45,7 @@ def launch_experiment(config_path: str):
         use_windows=config.preprocessing.use_windows,
         window_size=config.preprocessing.window_size,
         window_stride=config.preprocessing.window_stride,
+        max_empty_window_nb=config.preprocessing.max_empty_window_nb,
     )
 
     print("Instantiate data loaders...")

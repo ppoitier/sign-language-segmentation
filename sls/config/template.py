@@ -14,6 +14,7 @@ class Preprocessing(BaseModel):
     use_windows: bool = False
     window_size: int = 1500
     window_stride: int = 1200
+    max_empty_window_nb: int | None = None
 
 
 class BackboneConfig(BaseModel):
