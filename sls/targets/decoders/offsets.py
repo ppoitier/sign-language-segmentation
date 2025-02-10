@@ -11,7 +11,7 @@ class OffsetsDecoder(TargetDecoder):
         n_classes: int = 2,
         soft_nms_method: str = 'gaussian',
         soft_nms_sigma: float = 0.2,
-        soft_nms_threshold: float = 0.2,
+        soft_nms_threshold: float = 0.5,
     ):
         super().__init__()
         self.n_classes = n_classes
