@@ -6,7 +6,11 @@ from sign_language_tools.common.transforms import (
     Identity,
 )
 from sign_language_tools.pose.transform import *
-from sign_language_tools.annotations.transforms import RandomRelativeMoveSegments, RandomRelativeScaleSegments
+from sign_language_tools.annotations.transforms import (
+    RandomRelativeMoveSegments,
+    RandomRelativeScaleSegments,
+    FilterShortSilence,
+)
 
 
 def get_transform_pipeline(pipeline_name: str):
@@ -77,4 +81,6 @@ def get_segment_transform_pipeline(pipeline_name: str):
             RandomRelativeMoveSegments(dx_std=0.6),
             RandomRelativeScaleSegments(scale_std=0.6),
         ])
+    elif pipeline_name == 'remove-short-transitions':
+        return FilterShortSilence(min_duration=10)
     raise ValueError(f"Unknown segment transform pipeline: {pipeline_name}")
