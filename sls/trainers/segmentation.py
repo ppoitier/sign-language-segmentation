@@ -55,11 +55,7 @@ class SegmentationTrainer(TrainerBase):
 
         self.test_segment_metrics = PerSegmentMetrics(prefix='test/')
 
-        self.test_results = dict(
-            ids=[],
-            logits=[],
-            masks=[],
-        )
+        self.test_results = []
 
     def prediction_step(self, batch, mode: str):
         _, features, masks, targets = batch
@@ -107,13 +103,18 @@ class SegmentationTrainer(TrainerBase):
     def test_step(self, batch, batch_idx):
         instance_ids, features, masks, targets = batch
         logits, _ = self.prediction_step(batch, mode='test')
-        self.test_results['ids'].append(instance_ids)
-        self.test_results['logits'].append(logits.detach().cpu())
-        self.test_results['masks'].append(masks.detach().cpu())
         gt_segmentation = targets[self.encoder_name].long()
         gt_segments = targets['ground_truth']['segments']
         batch_size = gt_segmentation.size(0)
-
+        self.test_results += [
+            {
+                'id': instance_id,
+                'logits': instance_logits.detach().cpu()[:(instance_mask.sum())],
+                'segments': instance_segments.detach().cpu(),
+            }
+            for instance_id, instance_logits, instance_mask, instance_segments
+            in zip(instance_ids, logits, masks, gt_segments)
+        ]
         if not self.use_offsets:
             per_frame_preds = logits.argmax(dim=-1)
             pred_segments = self.decoder(per_frame_preds)
@@ -126,11 +127,6 @@ class SegmentationTrainer(TrainerBase):
 
         segment_metrics = self.test_segment_metrics(pred_segments, gt_segments)
         self.log_metrics(segment_metrics, batch_size=batch_size)
-
-    def on_test_epoch_end(self):
-        self.test_results['ids'] = sum(self.test_results['ids'], start=[])
-        self.test_results['logits'] = torch.concatenate(self.test_results['logits'], dim=0)
-        self.test_results['masks'] = torch.concatenate(self.test_results['masks'], dim=0)
 
     def configure_optimizers(self):
         return optim.AdamW(self.parameters(), lr=self.lr)

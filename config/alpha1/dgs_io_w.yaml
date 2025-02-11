@@ -1,0 +1,7 @@
+from: "dgs_io.yaml"
+
+training:
+  criterion_use_weights: true
+
+experiment:
+  name: "dgs_io_w"

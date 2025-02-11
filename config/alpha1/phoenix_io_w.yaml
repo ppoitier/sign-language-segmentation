@@ -1,0 +1,18 @@
+from: "dgs_io.yaml"
+
+dataset:
+  root: "/gpfs/scratch/acad/lsfb/datasets/phoenix"
+  train_shards_url: "shards/shard_{000000..000001}.tar"
+  val_shards_url: "shards/shard_000002.tar"
+  test_shards_url: "shards/shard_000002.tar"
+
+training:
+  criterion_use_weights: true
+
+preprocessing:
+  use_windows: true
+  window_size: 300
+
+
+experiment:
+  name: "phoenix_io_w"
