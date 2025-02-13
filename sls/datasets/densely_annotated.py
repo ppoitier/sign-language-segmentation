@@ -5,10 +5,12 @@ from tqdm import tqdm
 from sign_language_tools.annotations.transforms import SegmentationVectorToSegments
 from sign_language_tools.common.transforms import Compose
 from sign_language_tools.pose.transform import Concatenate, Flatten
-
-from sls.targets import get_target_encoder
-from sls.datasets.utils.windows import convert_instances_to_windows, filter_empty_windows
 from sls.datasets.utils.collate import collate_fixed_size, collate_varying_size
+from sls.datasets.utils.windows import (
+    convert_instances_to_windows,
+    filter_empty_windows,
+)
+from sls.targets import get_target_encoder
 
 
 def _map_fn(
@@ -74,6 +76,7 @@ class DenselyAnnotatedSLDataset(Dataset):
         window_size: int = 1500,
         window_stride: int = 1200,
         max_empty_window_nb: int | None = None,
+        return_window_boundaries: bool = False,
     ):
         super().__init__()
         self.encoder = encoder
@@ -85,13 +88,17 @@ class DenselyAnnotatedSLDataset(Dataset):
             wds.split_by_worker,
             wds.tarfile_to_samples(),
             wds.decode(),
-            wds.map(_map_fn(encoder, encoder_args, segment_transform, include_i3d_features)),
+            wds.map(
+                _map_fn(encoder, encoder_args, segment_transform, include_i3d_features)
+            ),
         )
         if show_progress:
             print(f"Loading dataset [{url}].", flush=True)
         for sample in tqdm(web_dataset, disable=not show_progress, unit="samples"):
             self.samples.append(sample)
 
+        self.use_windows = use_windows
+        self.return_window_boundaries = return_window_boundaries
         if use_windows:
             print("Building windows...")
             n_instances = len(self.samples)
@@ -115,6 +122,9 @@ class DenselyAnnotatedSLDataset(Dataset):
         )
         if self.transform is not None:
             features = self.transform(features)
+        if self.use_windows and self.return_window_boundaries:
+            start, end = sample["start"], sample["end"]
+            return instance_id, (start, end), features, targets
         return instance_id, features, targets
 
 
@@ -137,9 +147,10 @@ def load_datasets(
     transform=None,
     segment_transform=None,
     use_windows: bool = False,
-    window_size: int = 1500,
-    window_stride: int = 1200,
+    window_size: int = 3000,
+    window_stride: int = 2800,
     max_empty_window_nb: int | None = None,
+    return_window_boundaries: bool = False,
 ):
     return {
         "training": DenselyAnnotatedSLDataset(
@@ -153,6 +164,7 @@ def load_datasets(
             window_size=window_size,
             window_stride=window_stride,
             max_empty_window_nb=max_empty_window_nb,
+            return_window_boundaries=return_window_boundaries,
         ),
         "validation": DenselyAnnotatedSLDataset(
             url=f"{root}/{validation_shards}",
@@ -165,6 +177,7 @@ def load_datasets(
             window_size=window_size,
             window_stride=window_stride,
             max_empty_window_nb=max_empty_window_nb,
+            return_window_boundaries=return_window_boundaries,
         ),
     }
 

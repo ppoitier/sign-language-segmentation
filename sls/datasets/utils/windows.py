@@ -25,11 +25,14 @@ def get_segments_in_range(segments, start, end):
     return np.clip(segments[(segments[:, 0] < end) & (segments[:, 1] >= start)], a_min=start, a_max=end) - start
 
 
-def get_window_from_instance(instance: dict, start: int, end: int):
+def get_window_from_instance(instance: dict, start: int, end: int, add_timestamps: bool = False):
     if isinstance(instance, np.ndarray) or isinstance(instance, list):
         return instance[start:end]
     elif isinstance(instance, dict):
         new_instance = dict()
+        if add_timestamps:
+            new_instance['start'] = start
+            new_instance['end'] = end
         for k, v in instance.items():
             if k == 'segments':
                 new_instance[k] = get_segments_in_range(v, start, end)
@@ -41,7 +44,7 @@ def get_window_from_instance(instance: dict, start: int, end: int):
 
 
 def subdivide_instance_into_windows(instance: dict, window_indices: np.ndarray):
-    return [get_window_from_instance(instance, start, end) for start, end in window_indices]
+    return [get_window_from_instance(instance, start, end, add_timestamps=True) for start, end in window_indices]
 
 
 def convert_instances_to_windows(instances: list[dict], window_size: int, stride: int):

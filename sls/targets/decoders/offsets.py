@@ -35,4 +35,5 @@ class OffsetsDecoder(TargetDecoder):
             sigma=self.soft_nms_sigma,
             threshold=self.soft_nms_threshold,
         )
-        return proposals.round().astype('int32')
+        proposals = proposals.round().astype('int32')
+        return proposals[proposals[:, 0].argsort()]
