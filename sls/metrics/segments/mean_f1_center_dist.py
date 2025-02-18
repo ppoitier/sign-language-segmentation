@@ -2,21 +2,21 @@ import torch
 from torch import Tensor
 from torchmetrics import Metric
 
-from .functional import tp_fp_fn
+from .functional import tp_fp_fn_center_dists
 
 
-class MeanF1ScoreOverSegments(Metric):
-    def __init__(self, thresholds: Tensor, **kwargs):
+class MeanCenterDistF1Score(Metric):
+    def __init__(self, dist_thresholds: Tensor, **kwargs):
         super().__init__(**kwargs)
-        self.add_state("thresholds", default=thresholds, persistent=True)
+        self.add_state("thresholds", default=dist_thresholds, persistent=True)
         self.add_state(
-            "tp", default=torch.zeros(thresholds.size(0)), dist_reduce_fx="sum"
+            "tp", default=torch.zeros(dist_thresholds.size(0)), dist_reduce_fx="sum"
         )
         self.add_state(
-            "fp", default=torch.zeros(thresholds.size(0)), dist_reduce_fx="sum"
+            "fp", default=torch.zeros(dist_thresholds.size(0)), dist_reduce_fx="sum"
         )
         self.add_state(
-            "fn", default=torch.zeros(thresholds.size(0)), dist_reduce_fx="sum"
+            "fn", default=torch.zeros(dist_thresholds.size(0)), dist_reduce_fx="sum"
         )
 
     def update(self, pred_segments: list[Tensor], gt_segments: list[Tensor]) -> None:
@@ -26,7 +26,7 @@ class MeanF1ScoreOverSegments(Metric):
             gt_segments: batch of tensors of shape (N, 2) for the start and the end of N predicted segments.
         """
         for pred_segments_b, gt_segments_b in zip(pred_segments, gt_segments):
-            tp, fp, fn = tp_fp_fn(pred_segments_b, gt_segments_b, self.thresholds, algorithm='hungarian')
+            tp, fp, fn = tp_fp_fn_center_dists(pred_segments_b, gt_segments_b, self.thresholds)
             self.tp += tp
             self.fp += fp
             self.fn += fn

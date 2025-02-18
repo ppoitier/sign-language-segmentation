@@ -8,7 +8,7 @@ from tqdm import tqdm
 from sls.datasets.densely_annotated import load_datasets
 from sls.transforms.utils import get_transform_pipeline, get_segment_transform_pipeline
 from sls.targets.utils import get_target_decoder
-from sls.metrics.segments import MeanF1ScoreOverSegments
+from sls.metrics.segments import MeanIoUF1Score
 
 
 def load_targets():
@@ -38,7 +38,7 @@ def load_results(result_filepath: str):
 
 def evaluate(results, targets, soft_nms_params):
     decoder = get_target_decoder('offsets', soft_nms_params)
-    metric = MeanF1ScoreOverSegments(thresholds=torch.tensor([0.5]))
+    metric = MeanIoUF1Score(thresholds=torch.tensor([0.5]))
     for instance_id, logits, masks in tqdm(zip(results['ids'], results['logits'], results['masks'])):
         length = masks.sum()
         logits = logits[:length]
