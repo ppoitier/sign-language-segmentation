@@ -76,7 +76,6 @@ class DenselyAnnotatedSLDataset(Dataset):
         window_size: int = 1500,
         window_stride: int = 1200,
         max_empty_window_nb: int | None = None,
-        return_window_boundaries: bool = False,
     ):
         super().__init__()
         self.encoder = encoder
@@ -98,7 +97,6 @@ class DenselyAnnotatedSLDataset(Dataset):
             self.samples.append(sample)
 
         self.use_windows = use_windows
-        self.return_window_boundaries = return_window_boundaries
         if use_windows:
             print("Building windows...")
             n_instances = len(self.samples)
@@ -122,9 +120,9 @@ class DenselyAnnotatedSLDataset(Dataset):
         )
         if self.transform is not None:
             features = self.transform(features)
-        if self.use_windows and self.return_window_boundaries:
+        if self.use_windows:
             start, end = sample["start"], sample["end"]
-            return instance_id, (start, end), features, targets
+            instance_id = f"{instance_id}_{start}_{end}"
         return instance_id, features, targets
 
 
@@ -150,7 +148,6 @@ def load_datasets(
     window_size: int = 3000,
     window_stride: int = 2800,
     max_empty_window_nb: int | None = None,
-    return_window_boundaries: bool = False,
 ):
     return {
         "training": DenselyAnnotatedSLDataset(
@@ -164,7 +161,6 @@ def load_datasets(
             window_size=window_size,
             window_stride=window_stride,
             max_empty_window_nb=max_empty_window_nb,
-            return_window_boundaries=return_window_boundaries,
         ),
         "validation": DenselyAnnotatedSLDataset(
             url=f"{root}/{validation_shards}",
@@ -177,7 +173,6 @@ def load_datasets(
             window_size=window_size,
             window_stride=window_stride,
             max_empty_window_nb=max_empty_window_nb,
-            return_window_boundaries=return_window_boundaries,
         ),
     }
 

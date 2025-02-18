@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-5
+#SBATCH --array=0-3
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -29,8 +29,6 @@ config_files=(
   "../config/alpha1/dgs_io_off.yaml"
   "../config/alpha1/lsfb_io.yaml"
   "../config/alpha1/lsfb_io_off.yaml"
-  "../config/alpha1/phoenix_io.yaml"
-  "../config/alpha1/phoenix_io_off.yaml"
 )
 
 config_file=${config_files[$SLURM_ARRAY_TASK_ID]}
