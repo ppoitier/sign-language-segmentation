@@ -1,0 +1,16 @@
+from: "lsfb2dgs_io.yaml"
+
+dataset:
+  root: "file:D:/data/sign-languages/lsfb-cont"
+  train_shards_url: "shards/shard_000004.tar"
+  val_shards_url: "shards/shard_000004.tar"
+  test_shards_url: "shards/shard_000004.tar"
+
+preprocessing:
+  max_empty_window_nb: 0
+
+backbone:
+  checkpoint_path: "D:/data/sign-languages/outs/sls/alpha1/checkpoints/dgs_io_451908/epoch=51-step=32812.ckpt"
+
+experiment:
+  name: "dgs2lsfb_io"

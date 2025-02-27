@@ -1,0 +1,13 @@
+from: "dgs_io_noise_low.yaml"
+
+dataset:
+  root: "/gpfs/scratch/acad/lsfb/datasets/lsfb_cont"
+  train_shards_url: "shards/shard_{000000..000003}.tar"
+  val_shards_url: "shards/shard_000004.tar"
+  test_shards_url: "shards/shard_000004.tar"
+
+preprocessing:
+  max_empty_window_nb: 0
+
+experiment:
+  name: "lsfb_io_noise_low"

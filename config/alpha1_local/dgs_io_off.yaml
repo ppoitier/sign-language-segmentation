@@ -1,0 +1,26 @@
+from: "dgs_io.yaml"
+
+backbone:
+  checkpoint_path: "D:/data/sign-languages/outs/sls/alpha1/checkpoints/dgs_io_off_451931/epoch=138-step=87709.ckpt"
+  args:
+    # 2 for classification, and 2 for offsets
+    out_channels: 4
+
+target:
+  offsets: true
+  encoder:
+    name: 'offsets+actionness'
+    args: {}
+  decoder:
+    name: 'offsets+actionness'
+    args:
+      n_classes: 2
+      soft_nms_method: 'gaussian'
+      soft_nms_sigma: 0.1
+      soft_nms_threshold: 0.5
+
+training:
+  criterion: 'multi-layer+ce+smoothing+offsets'
+
+experiment:
+  name: "dgs_io_off"

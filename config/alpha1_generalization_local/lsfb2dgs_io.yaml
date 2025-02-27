@@ -1,0 +1,49 @@
+
+dataset:
+  root: "file:D:/data/sign-languages/dgs-corpus"
+  train_shards_url: "shards_processed/shard_000004.tar"
+  val_shards_url: "shards_processed/shard_000004.tar"
+  test_shards_url: "shards_processed/shard_000004.tar"
+
+preprocessing:
+  use_windows: true
+  window_size: 3500
+  window_stride: 2800
+  transforms_pipeline: "norm+flatten-pose"
+
+backbone:
+  name: 'mstcn'
+  multilayer_output: true
+  checkpoint_path: "D:/data/sign-languages/outs/sls/alpha1/checkpoints/lsfb_io_451927/epoch=36-step=11248.ckpt"
+  args:
+    in_channels: 130
+    hidden_channels: 64
+    n_stages: 4
+    n_layers: 10
+    out_channels: 2
+
+target:
+  offsets: false
+  encoder:
+    name: 'actionness'
+    args: {}
+  decoder:
+    name: 'actionness'
+    args: {}
+
+training:
+  batch_size: 8
+  n_workers: 0
+  criterion: 'multi-layer+ce+smoothing'
+  learning_rate: 2e-4
+  n_epochs: 200
+  gradient_clipping: 0.0
+  early_stopping_patience: 30
+  criterion_use_weights: false
+  skip_training: true
+  skip_testing: false
+
+experiment:
+  name: "lsfb2dgs_io"
+  debug: false
+  out_dir: "D:/data/sign-languages/outs/sls/alpha1_local"

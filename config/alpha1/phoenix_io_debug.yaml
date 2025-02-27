@@ -1,0 +1,22 @@
+from: "dgs_io.yaml"
+
+dataset:
+  root: "file:d:/data/sign-languages/phoenix"
+  train_shards_url: "shards/shard_{000000..000001}.tar"
+  val_shards_url: "shards/shard_000002.tar"
+  test_shards_url: "shards/shard_000002.tar"
+
+preprocessing:
+  use_windows: true
+  window_size: 300
+  window_stride: 240
+
+training:
+  n_workers: 0
+  skip_training: false
+  skip_testing: true
+
+experiment:
+  name: "phoenix_io"
+  debug: true
+  out_dir: "./out"
