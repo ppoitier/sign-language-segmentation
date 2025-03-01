@@ -67,8 +67,8 @@ class SegmentationTrainer(TrainerBase):
         loss = self.criterion(logits, encoded_targets)
         if self.use_offsets:
             loss, cls_loss, reg_loss = loss
-            self.log(f'{mode}_cls_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
-            self.log(f'{mode}_reg_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            self.log(f'{mode}_cls_loss', cls_loss, on_step=True, on_epoch=True, batch_size=batch_size)
+            self.log(f'{mode}_reg_loss', reg_loss, on_step=True, on_epoch=True, batch_size=batch_size)
         self.log(f'{mode}_loss', loss, on_step=True, on_epoch=True, batch_size=batch_size)
 
         # If we have a multi-layer output, we take the last one (the most refined one)

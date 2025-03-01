@@ -79,14 +79,14 @@ def tp_fp_fn(
     n_thresh = iou_thresholds.shape[0]
     device = pred_segments.device
     if n_pred == 0:
-        tp = torch.zeros(n_thresh, device=device)
-        fp = torch.zeros(n_thresh, device=device)
-        fn = torch.full((n_thresh,), fill_value=n_gt, device=device)
+        tp = torch.zeros(n_thresh, dtype=torch.long, device=device)
+        fp = torch.zeros(n_thresh, dtype=torch.long, device=device)
+        fn = torch.full((n_thresh,), fill_value=n_gt, dtype=torch.long, device=device)
         return tp, fp, fn
     if n_gt == 0:
-        tp = torch.zeros(n_thresh, device=device)
-        fp = torch.full((n_thresh,), fill_value=n_pred, device=device)
-        fn = torch.zeros(n_thresh, device=device)
+        tp = torch.zeros(n_thresh, dtype=torch.long, device=device)
+        fp = torch.full((n_thresh,), fill_value=n_pred, dtype=torch.long, device=device)
+        fn = torch.zeros(n_thresh, dtype=torch.long, device=device)
         return tp, fp, fn
     iou_matrix = compute_iou_matrix(pred_segments, gt_segments)
     cost_matrix = 1 - iou_matrix
@@ -117,15 +117,16 @@ def tp_fp_fn_center_dists(
     n_pred, n_gt = pred_segments.shape[0], gt_segments.shape[0]
     n_thresh = dist_thresholds.shape[0]
     device = pred_segments.device
+
     if n_pred == 0:
-        tp = torch.zeros(n_thresh, device=device)
-        fp = torch.zeros(n_thresh, device=device)
+        tp = torch.zeros(n_thresh, dtype=torch.long, device=device)
+        fp = torch.zeros(n_thresh, dtype=torch.long, device=device)
         fn = torch.full((n_thresh,), fill_value=n_gt, device=device)
         return tp, fp, fn
     if n_gt == 0:
-        tp = torch.zeros(n_thresh, device=device)
-        fp = torch.full((n_thresh,), fill_value=n_pred, device=device)
-        fn = torch.zeros(n_thresh, device=device)
+        tp = torch.zeros(n_thresh, dtype=torch.long, device=device)
+        fp = torch.full((n_thresh,), fill_value=n_pred, dtype=torch.long, device=device)
+        fn = torch.zeros(n_thresh, dtype=torch.long, device=device)
         return tp, fp, fn
     dist_matrix = compute_center_dist_matrix(pred_segments, gt_segments)
     selected_rows, selected_columns = hungarian_bipartite_matching(dist_matrix)
@@ -143,16 +144,16 @@ if __name__ == "__main__":
         [0, 9],
         [3, 5],
         [5, 10],
-    ])
+    ], dtype=torch.float32)
     gt = torch.tensor([
-        [2, 5],
-        [3, 10],
-        [4, 14],
-        [0, 12],
-        [5, 6],
-    ])
+        # [2, 5],
+        # [3, 10],
+        # [4, 14],
+        # [0, 12],
+        # [5, 6],
+    ], dtype=torch.float32)
 
-    print(tp_fp_fn_center_dists(pred, gt, dist_thresholds=torch.tensor([1.0])))
+    # print(tp_fp_fn_center_dists(pred, gt, dist_thresholds=torch.tensor([1.0])))
 
-    # print(tp_fp_fn(pred, gt, torch.tensor([0.4, 0.5, 0.8]), algorithm='greedy'))
+    print(tp_fp_fn(pred, gt, torch.tensor([0.4, 0.5, 0.8])))
 
