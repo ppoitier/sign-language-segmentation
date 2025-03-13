@@ -1,4 +1,4 @@
-from: "lsfb_io_no_gap"
+from: "lsfb_io_no_gap.yaml"
 
 backbone:
   args:

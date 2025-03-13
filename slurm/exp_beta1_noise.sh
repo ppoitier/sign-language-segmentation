@@ -8,7 +8,7 @@
 #SBATCH --gres="gpu:1"
 #SBATCH --mem-per-cpu=16384
 #SBATCH --partition=gpu
-#SBATCH --array=0-19
+#SBATCH --array=0-0
 #
 #SBATCH --mail-user=pierre.poitier@unamur.be
 #SBATCH --mail-type=ALL
@@ -25,21 +25,21 @@ module load Python/3.10.4-GCCcore-11.3.0
 source /gpfs/home/acad/unamur-fac_info/ppoitier/envs/dl/bin/activate
 
 config_files=(
-  "../config/beta1/noise/low/dgs_io_noise_low.yaml"
-  "../config/beta1/noise/low/dgs_io_off_noise_low.yaml"
-  "../config/beta1/noise/low/lsfb_io_noise_low.yaml"
-  "../config/beta1/noise/low/lsfb_io_off_noise_low.yaml"
-  "../config/beta1/noise/medium/dgs_io_noise_medium.yaml"
-  "../config/beta1/noise/medium/dgs_io_off_noise_medium.yaml"
-  "../config/beta1/noise/medium/lsfb_io_noise_medium.yaml"
-  "../config/beta1/noise/medium/lsfb_io_off_noise_medium.yaml"
-  "../config/beta1/noise/high/dgs_io_noise_high.yaml"
-  "../config/beta1/noise/high/dgs_io_off_noise_high.yaml"
-  "../config/beta1/noise/high/lsfb_io_noise_high.yaml"
-  "../config/beta1/noise/high/lsfb_io_off_noise_high.yaml"
-  "../config/beta1/noise/remove-gaps/dgs_io_no_gap.yaml"
-  "../config/beta1/noise/remove-gaps/dgs_io_off_no_gap.yaml"
-  "../config/beta1/noise/remove-gaps/lsfb_io_no_gap.yaml"
+#  "../config/beta1/noise/low/dgs_io_noise_low.yaml"
+#  "../config/beta1/noise/low/dgs_io_off_noise_low.yaml"
+#  "../config/beta1/noise/low/lsfb_io_noise_low.yaml"
+#  "../config/beta1/noise/low/lsfb_io_off_noise_low.yaml"
+#  "../config/beta1/noise/medium/dgs_io_noise_medium.yaml"
+#  "../config/beta1/noise/medium/dgs_io_off_noise_medium.yaml"
+#  "../config/beta1/noise/medium/lsfb_io_noise_medium.yaml"
+#  "../config/beta1/noise/medium/lsfb_io_off_noise_medium.yaml"
+#  "../config/beta1/noise/high/dgs_io_noise_high.yaml"
+#  "../config/beta1/noise/high/dgs_io_off_noise_high.yaml"
+#  "../config/beta1/noise/high/lsfb_io_noise_high.yaml"
+#  "../config/beta1/noise/high/lsfb_io_off_noise_high.yaml"
+#  "../config/beta1/noise/remove-gaps/dgs_io_no_gap.yaml"
+#  "../config/beta1/noise/remove-gaps/dgs_io_off_no_gap.yaml"
+#  "../config/beta1/noise/remove-gaps/lsfb_io_no_gap.yaml"
   "../config/beta1/noise/remove-gaps/lsfb_io_off_no_gap.yaml"
 )
 
